@@ -1,24 +1,27 @@
 package i.ll.algo.go.sorting
 
 import i.ll.algo.go.App
+import mu.KotlinLogging
 
-class BubbleSort(override val timeLimit: Boolean = false) : Sort {
+class BubbleSort : Sort {
 
-    override var runtime: Long = -1
+    private val log = KotlinLogging.logger {  }
 
     /** Bubble Sort - O(n^2), 𝛺(n), θ(n^2)
      *  "Bubbles" the largest value to the end of the collection iteratively.
      *
      *  Returns a sorted list, or null if runtime exceeds max permitted time and timeout flag is set to true.
      */
-    override fun <T: Comparable<T>> sort(data: Array<T>): Array<T>? {
+    override fun <T: Comparable<T>> sort(data: ArrayList<T>): SortResult<T> {
+        log.info { this.startMessage() }
         val startTime = System.currentTimeMillis()
         var lastIdx = data.size - 1
         val startIdx = 0
         var terminated = false
 
         while (startIdx < lastIdx) {
-            if ( timeLimit && (System.currentTimeMillis() - startTime) < App.MAX_SORT_TIME) {
+            if ((System.currentTimeMillis() - startTime) >= App.MAX_SORT_TIME) {
+                log.warn { this.terminateMessage() }
                 terminated = true
                 break
             }
@@ -32,7 +35,8 @@ class BubbleSort(override val timeLimit: Boolean = false) : Sort {
             }
             lastIdx--
         }
-        runtime = System.currentTimeMillis() - startTime
-        return if (terminated) null else data
+        val runtime = System.currentTimeMillis() - startTime
+        log.info { this.endMessage(runtime) }
+        return SortResult(if (terminated) null else data, runtime, this::class.java.simpleName)
     }
 }

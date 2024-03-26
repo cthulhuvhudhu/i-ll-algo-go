@@ -19,6 +19,10 @@ repositories {
     mavenCentral()
 }
 
+tasks.withType<JavaExec> {
+    systemProperty("INPUT_DIR", project.findProperty("INPUT_DIR") ?: "src/main/resources/")
+}
+
 dependencies {
     // Use the Kotlin JUnit 5 integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
@@ -28,6 +32,10 @@ dependencies {
 
     // This dependency is used by the application.
     implementation("com.google.guava:guava:33.0.0-jre")
+    implementation("io.insert-koin:koin-core:3.5.0")
+    implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
+    implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.23")
 }
 
 application {

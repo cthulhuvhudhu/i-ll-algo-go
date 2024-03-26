@@ -1,26 +1,25 @@
 package i.ll.algo.go.sorting
 
 import i.ll.algo.go.App
-import i.ll.algo.go.sortTimeOut
+import mu.KotlinLogging
 
-class QuickSort(override val timeLimit: Boolean = false) : Sort {
+class QuickSort : Sort {
 
-    override var runtime: Long = -1
+    private val log = KotlinLogging.logger {  }
 
     /** Quick Sort - O(n^2), 𝛺(n log n), θ(n log n)
      *  Chooses a pivot value, sorts values to less- and greater-than, and iteratively applies to subpartitions.
-     *
-     *  Returns a sorted list, or null if runtime exceeds max permitted time and timeout flag is set to true.
      */
-    override fun <T: Comparable<T>> sort(data: Array<T>): Array<T>? {
-        sortTimeOut = false
+    override fun <T: Comparable<T>> sort(data: ArrayList<T>): SortResult<T> {
+        log.info { this.startMessage() }
         val startTime = System.currentTimeMillis()
         var terminated = false
         val indices = ArrayDeque<Pair<Int, Int>>()
         indices.add(0 to data.size - 1)
 
         while (indices.isNotEmpty()) {
-            if ( timeLimit && (System.currentTimeMillis() - startTime) < App.MAX_SORT_TIME) {
+            if ((System.currentTimeMillis() - startTime) >= App.MAX_SORT_TIME) {
+                log.warn { this.terminateMessage() }
                 terminated = true
                 break
             }
@@ -64,7 +63,8 @@ class QuickSort(override val timeLimit: Boolean = false) : Sort {
                 indices.add(rIdx + 2 to pivotRange.second)
             }
         }
-        runtime = System.currentTimeMillis() - startTime
-        return if (terminated) null else data
+        val runtime = System.currentTimeMillis() - startTime
+        log.info { this.endMessage(runtime) }
+        return SortResult(if (terminated) null else data, runtime, this::class.java.simpleName)
     }
 }

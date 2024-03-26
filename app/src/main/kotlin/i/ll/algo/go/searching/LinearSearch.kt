@@ -1,19 +1,33 @@
 package i.ll.algo.go.searching
 
+import i.ll.algo.go.App
+import i.ll.algo.go.hashing.Searchable
+import mu.KotlinLogging
+
 class LinearSearch : Search {
 
-    override var runtime: Long = -1
+    private val log = KotlinLogging.logger {  }
 
-    /** Linear search - O(n*m), 𝛺(1), θ(n*m)
+    /** Linear search - O(n*m), 𝛺(1*m), θ(n*m)
      *  Goes through elements sequentially and checks for a match.
      *
-     *  Returns a list of queried items that were _not_ found in the dataset.
-     *  This implementation does not utilize the timeout feature.
+     *  Returns a list of queried items that were found in the dataset, or null if timeout.
      */
-    override fun <T: Comparable<T>> search(data: Array<T>, queries: Array<T>): List<T> {
+    override fun <T : Searchable<T, S>, S : Comparable<S>> search(data: List<T>, queries: List<S>): SearchResult<T> {
+        log.info { this.startMessage() }
         val startTime = System.currentTimeMillis()
-        val result = queries.filter { q -> data.none { it == q } }
-        runtime = System.currentTimeMillis() - startTime
-        return result
+        val found = mutableListOf<T>()
+        var terminated = false
+        for (q in queries) {
+            if ((System.currentTimeMillis() - startTime) >= App.MAX_SEARCH_TIME) {
+                log.warn { this.terminateMessage() }
+                terminated = true
+                break
+            }
+            data.find { it.getKey() == q }?.apply { found.add(this) }
+        }
+        val runtime = System.currentTimeMillis() - startTime
+        log.info { this.endMessage(runtime) }
+        return SearchResult(if (terminated) null else found, runtime, this::class.java.simpleName)
     }
 }
