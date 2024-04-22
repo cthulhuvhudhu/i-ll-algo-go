@@ -6,9 +6,20 @@ import mu.KotlinLogging
 class HashSetSearch : HashSearch {
 
     private val log = KotlinLogging.logger {  }
-    // TODO Comments with diffs here
-    // TODO manual v library impl? data impls.
-    // TODO o annotation
+    /** HashSet populate & search(per query): O(1), 𝛺(1), θ(1) - Optimal **KNOWN CAPACITY & UNIQUES, no collisions or rehashing**
+     * Caveats: Slower than hashmap
+     *
+     * When considering collisions and rehashing:
+     * Deletion/Search: O(n), 𝛺(1), θ(1)
+     * Insertion: O(n), 𝛺(1), θ(h/n)
+     *
+     * Space complexity: O(n)
+     * Nulls: 1 allowed
+     * Duplicates: Not allowed
+     * Traversal: fail fast iterator
+     * Backed by hashmap>hashtable
+     */
+    @Suppress("UNCHECKED_CAST")
     override fun <T : Searchable<T, S>, S : Comparable<S>> search(
         data: List<T>,
         queries: List<S>

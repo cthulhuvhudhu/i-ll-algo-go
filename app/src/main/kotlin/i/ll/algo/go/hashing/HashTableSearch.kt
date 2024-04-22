@@ -8,9 +8,18 @@ class HashTableSearch : HashSearch {
 
     private val log = KotlinLogging.logger {  }
 
-    // TODO Comments with diffs here
-    // TODO manual v library impl?
-    // TODO o annotation
+    /** Hashtable populate & search(per query): O(1), 𝛺(1), θ(1) - Optimal **KNOWN CAPACITY & UNIQUES, no collisions or rehashing**
+     * Caveats: Worse memory performance than HashMap
+     *
+     * When considering collisions and rehashing:
+     * Deletion/Search: O(n), 𝛺(1), θ(1)
+     * Insertion: O(n), 𝛺(1), θ(h/n)
+     *
+     * Space complexity: O(n)
+     * Nulls: Not allowed
+     * Traversal: Enumerator (not fail fast)
+     * Synchronized
+     */
     override fun <T : Searchable<T, S>, S : Comparable<S>> search(
         data: List<T>,
         queries: List<S>
