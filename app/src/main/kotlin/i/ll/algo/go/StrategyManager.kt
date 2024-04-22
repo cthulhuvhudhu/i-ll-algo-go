@@ -24,6 +24,7 @@ class StrategyManager<T: Searchable<T,S>, S: Comparable<S>>(
     private val data = ArrayList<T>(fileManager.getData(dataFilename, dataCreator))
     private val queries = fileManager.getData(queryFilename, queryCreator)
 
+    @Suppress("UNCHECKED_CAST")
     fun <T: Searchable<T,S>, S: Comparable<S>> run() {
         if (autoStrategy) { runStrategies() }
         else {
@@ -31,7 +32,6 @@ class StrategyManager<T: Searchable<T,S>, S: Comparable<S>>(
             val sortedData = sortResults.firstNotNullOf { it.sorted as? List<T> }
             val searchResults = searchAlgos.map { s -> (1..App.SEARCH_REPS).map { s.invoke().search(data, queries) } }.flatten()
             val hashResults = hashAlgos.map { h -> (1..App.SEARCH_REPS).map { h.invoke().search(data, queries) } }.flatten()
-            // TODO output, stats
         }
     }
 
